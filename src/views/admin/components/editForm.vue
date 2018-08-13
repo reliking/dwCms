@@ -4,7 +4,7 @@
         <el-tabs v-model="activeName" @tab-click="changeTabFun">
             <el-tab-pane label="添加/修改用户信息" name="first">
                 <!---------------------------------------->
-                <el-form :rules="editSysFormRules" ref="editSysForm" :model="editSysForm" label-position="left" label-width="120px" style='width: 500px; margin-left:50px;'>
+                <el-form :rules="editSysFormRules" ref="editSysForm" :model="editSysForm" label-position="left" label-width="120px" style='width: 800px; margin-left:50px;'>
                     <el-form-item label="用户组" prop="group_id">
                         <el-select v-model="editSysForm.group_id" placeholder="请选择">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -21,7 +21,7 @@
                     <el-form-item label="密码" prop="passwd">
                         <el-input v-model="editSysForm.passwd" placeholder="请输入密码"></el-input>
                     </el-form-item>
-                    <el-form-item label="真实姓名" prop="true_name">
+                    <!--<el-form-item label="真实姓名" prop="true_name">
                         <el-input v-model="editSysForm.true_name" placeholder="请输入真实姓名"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号码" prop="telephone">
@@ -29,7 +29,31 @@
                     </el-form-item>
                     <el-form-item label="邮箱" prop="email">
                         <el-input v-model="editSysForm.email" placeholder="请输入邮箱"></el-input>
+                    </el-form-item>-->
+                    <el-form-item label="活动时间">
+                        <el-col :span="11">
+                          <el-date-picker type="date" placeholder="选择日期" style="width: 100%;"></el-date-picker>
+                        </el-col>
+                        <el-col class="line" :span="2">-</el-col>
+                        <el-col :span="11">
+                          <el-time-picker type="fixed-time" placeholder="选择时间" style="width: 100%;"></el-time-picker>
+                        </el-col>
                     </el-form-item>
+                    <el-form-item label="活动性质">
+                        <el-checkbox-group>
+                            <el-checkbox label="美食/餐厅线上活动" name="type"></el-checkbox>
+                            <el-checkbox label="地推活动" name="type"></el-checkbox>
+                            <el-checkbox label="线下主题活动" name="type"></el-checkbox>
+                            <el-checkbox label="单纯品牌曝光" name="type"></el-checkbox>
+                        </el-checkbox-group>
+                    </el-form-item>
+                    <el-form-item label="活动形式">
+                        <el-input type="textarea"></el-input>
+                    </el-form-item>
+                    
+                    <div class="editor-container">
+                        <Tinymce :height="300" ref="editor" v-model="editSysForm.content" />
+                    </div>
                 </el-form>
                 <div>
                     <el-button @click="closeEditFun">取消</el-button>
@@ -47,6 +71,8 @@
     import { checkForm } from '@/filters/validatorForm'
     import { addAdminApi } from '@/api/admin'
     import { Message } from 'element-ui'
+    
+    import Tinymce from '@/components/Tinymce'
     export default {
         data() {
             return {
@@ -64,6 +90,7 @@
                     user_name: '',
                     passwd: '',
                     status: '',
+                    content:'',
                     true_name: '',
                     telephone: '',
                     email: '',
@@ -76,6 +103,9 @@
             }
         },
         props: ['jsonId'],
+        components: {
+            Tinymce,
+        },
         methods: {
             changeTabFun(tab, event) {
                 console.log(tab, event);
