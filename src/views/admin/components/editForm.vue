@@ -114,9 +114,10 @@
                 this.$emit('closeEditForm', false)
             },
             checkFormDataFun(){//检查表单是否合法
+                let ret = false;
                 this.$refs.editSysForm.validate(valid => {
                     if(valid) {
-                        return true;
+                        ret = true;
                     } else {
                         Message({
                             message: '请填写好相应项，才能发公告！',
@@ -124,9 +125,11 @@
                             duration: 2 * 1000
                         })
                         console.log('error submit!!')
-                        return false
+                        ret = false
                     }
+                    return ret;
                 });
+                
             },
             messageFun(type,msg){
                 if(type == 1){
