@@ -1,6 +1,9 @@
 <template>
     <div class="editForm">
-        <div class="cancelEdit" @click="closeEditFun"><i class="el-icon-circle-close-outline"></i> 关闭</div>
+        <div class="cancelEdit">
+            <el-button type="success" icon="el-icon-check" @click="submitEditSysFun">保存</el-button>
+            <el-button type="danger" icon="el-icon-close" @click="closeEditFun">关闭</el-button>
+        </div>
         <el-tabs v-model="activeName" @tab-click="changeTabFun">
             <el-tab-pane label="添加/修改用户信息" name="first">
                 <!---------------------------------------->
@@ -55,9 +58,9 @@
                         <Tinymce :height="300" ref="editor" v-model="editSysForm.content" />
                     </div>
                 </el-form>
-                <div>
-                    <el-button @click="closeEditFun">取消</el-button>
-                    <el-button type="primary" :loading="btnLoading" @click="submitEditSysFun">确认</el-button>
+                <div style="margin-top: 30px; margin-left: 50px;">
+                    <el-button @click="closeEditFun" style="width: 180px;">取消</el-button>
+                    <el-button type="primary" :loading="btnLoading" style="width: 180px;" @click="submitEditSysFun">确认</el-button>
                 </div>
                 <!---------------------------------------->
             </el-tab-pane>

@@ -1,8 +1,15 @@
 <template>
     <div class="app-container">
-        <div class="filter-container">
-            <el-button type="primary" icon="el-icon-search" @click="editFormFun()">添加用户</el-button>
+        <div class="filter-container li-search">
+            <el-button type="primary" @click="editFormFun()">添加用户</el-button>
+            <el-date-picker type="date" placeholder="选择日期"></el-date-picker>
+            <el-time-picker type="fixed-time" placeholder="选择时间"></el-time-picker>
             <el-input v-model="listQuery.type" placeholder="用户名称" style="width:200px;"></el-input>
+            <el-select v-model="listQuery.type" placeholder="请选择">
+                <el-option :key="1" :label="'选项1'" :value="1"></el-option>
+                <el-option :key="2" :label="'选项2'" :value="2"></el-option>
+                <el-option :key="3" :label="'选项3'" :value="3"></el-option>
+            </el-select>
             <el-button type="primary" icon="el-icon-search" @click="serchFun">查找</el-button>
             <el-button style="margin-left: 10px;" @click="reSearchFun" type="primary" icon="el-icon-edit">重置</el-button>
         </div>
@@ -15,11 +22,11 @@
             <el-table-column label="手机号" prop="telephone"></el-table-column>
             <el-table-column label="邮箱" prop="email"></el-table-column>
             <el-table-column label="最后登录ip" prop="last_login_ip"></el-table-column>
-            
+
             <el-table-column align="center" label="操作" width="160">
                 <template slot-scope="scope">
-                    <span @click="editFormFun(scope.row)">编辑</span> ｜ 
-                    <span @click="delPayFun(scope.row.admin_id)">删除</span> ｜ 
+                    <span @click="editFormFun(scope.row)">编辑</span> ｜
+                    <span @click="delPayFun(scope.row.admin_id)">删除</span> ｜
                     <span>权限</span>
                 </template>
             </el-table-column>
@@ -61,27 +68,27 @@
                 <el-button type="primary" :loading="btnLoading" @click="submitEditSysFun">确认</el-button>
             </div>
         </el-dialog>-->
-        
+
         <transition name="fade-transform" mode="out-in">
             <edit-form v-show="editFormVisible" :jsonId="jsonID" @closeEditForm="(statsT)=>{editFormVisible = statsT; getList();}">
             </edit-form>
         </transition>
-        
+
     </div>
 </template>
 <script>
     import { Message } from 'element-ui'
-    import { getAdminListApi, addAdminApi,delAdminApi } from '@/api/admin'
+    import { getAdminListApi, addAdminApi, delAdminApi } from '@/api/admin'
     //import { checkForm } from '@/filters/form'
     import { checkForm } from '@/filters/validatorForm'
-    
+
     import editForm from './components/editForm'
     export default {
         name: 'PresentRecord',
         data() {
             return {
-                editFormVisible:false,
-                jsonID:'',
+                editFormVisible: false,
+                jsonID: '',
                 tableKey: 0,
                 list: null,
                 total: null,
@@ -95,38 +102,59 @@
                         'order_value': 'desc'
                     }],
                 },
-                options:[
-                    {label:'首页上部轮播',value:'1'},
-                    {label:'首页中部视频广告',value:'2'},
-                    {label:'首页左边栏广告',value:'3'},
-                    {label:'首页背景',value:'4'}
+                options: [{
+                        label: '首页上部轮播',
+                        value: '1'
+                    },
+                    {
+                        label: '首页中部视频广告',
+                        value: '2'
+                    },
+                    {
+                        label: '首页左边栏广告',
+                        value: '3'
+                    },
+                    {
+                        label: '首页背景',
+                        value: '4'
+                    }
                 ],
-                btnLoading:false,
-                editSysFormVisible:false,
-                isAdd:false,
-                editSysForm:{
+                btnLoading: false,
+                editSysFormVisible: false,
+                isAdd: false,
+                editSysForm: {
                     admin_id: '',
                     user_name: '',
                     passwd: '',
                     status: '',
                     true_name: '',
-                    telephone:'',
-                    email:'',
+                    telephone: '',
+                    email: '',
                 },
                 editSysFormRules: {
                     //user_name: [{ required: true, trigger: 'blur', message:'不能为空'}],
-                    user_name: [{ required: true, type:'name', trigger: 'blur', validator:checkForm}],
-                    passwd: [{ required: false, type:'pwd', trigger: 'blur', validator:checkForm}],
+                    user_name: [{
+                        required: true,
+                        type: 'name',
+                        trigger: 'blur',
+                        validator: checkForm
+                    }],
+                    passwd: [{
+                        required: false,
+                        type: 'pwd',
+                        trigger: 'blur',
+                        validator: checkForm
+                    }],
                 },
             }
         },
         filters: {
-            
+
         },
         created() {
             this.getList();
         },
-        components:{
+        components: {
             editForm
         },
         methods: {
@@ -150,11 +178,11 @@
                 this.listQuery.page_no = val;
                 this.getList()
             },
-            serchFun(){
+            serchFun() {
                 this.listQuery.page_no = 1;
                 this.getList();
             },
-            reSearchFun(){
+            reSearchFun() {
                 this.listQuery = {
                     'way_name': '',
                     'page_no': 1,
@@ -166,20 +194,22 @@
                 }
                 this.getList();
             },
-            editFormFun(itemS){
-                if(itemS){
+            editFormFun(itemS) {
+                if(itemS) {
                     this.jsonID = itemS;
-                }else{ 
+                } else {
                     this.jsonID == '' ? this.jsonID = 0 : this.jsonID = '';
                 }
                 this.editFormVisible = true;
             },
-            delPayFun(nId){
+            delPayFun(nId) {
                 console.log(nId);
                 if(!nId) return;
                 nId = parseInt(nId);
                 this.$confirm('确认要删除？').then(_ => {
-                    delAdminApi({admin_id:nId}).then(response => {
+                    delAdminApi({
+                        admin_id: nId
+                    }).then(response => {
                         console.log(JSON.stringify(response));
                         Message({
                             message: '删除成功！',
@@ -193,7 +223,7 @@
                         this.listLoading = false;
                     })
                     return false;
-                }).catch(res=> {
+                }).catch(res => {
                     console.log(1111111);
                 });
             },
@@ -202,5 +232,7 @@
 </script>
 
 <style>
-.app-main{ position: relative;}
+    .app-main {
+        position: relative;
+    }
 </style>
