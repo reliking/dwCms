@@ -23,6 +23,16 @@
                 <i v-else class="el-icon-arrow-down showMore"> 展开</i>
             </div>
         </div>
+        
+        <div class="filter-container li-search">
+            <el-input v-model="listQuery.type" placeholder="用户名称"></el-input>
+            <el-date-picker type="date" placeholder="选择日期"></el-date-picker>
+            <el-time-picker type="fixed-time" placeholder="选择时间"></el-time-picker>
+            <el-button type="primary" icon="el-icon-search" @click.stop="serchFun">搜索</el-button>
+            <el-button type="warning" plain icon="el-icon-refresh" @click.stop="reSearchFun">重置</el-button>
+            <el-button type="success" icon="el-icon-plus" @click.stop="editFormFun()">添加</el-button>
+        </div>
+        
         <el-table :key='tableKey' :data="list" v-loading="listLoading" element-loading-text="给我一点时间" border fit highlight-current-row style="width: 100%">
             <el-table-column label="Id" width="80" prop="admin_id"></el-table-column>
             <el-table-column label="用户名" width="100" prop="user_name"></el-table-column>
